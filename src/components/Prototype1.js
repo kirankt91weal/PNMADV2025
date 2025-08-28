@@ -1,18 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Prototype1 = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
+  const [chatStep, setChatStep] = useState(0);
+  const chatMessagesRef = useRef(null);
+
+  // Auto-scroll to bottom whenever chat step changes
+  useEffect(() => {
+    if (chatMessagesRef.current) {
+      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+    }
+  }, [chatStep]);
 
   const handleScreenClick = () => {
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
+    } else if (currentStep === 3) {
+      // When on step 3 (PayNearMe app), clicking advances to web chat
+      setCurrentStep(4);
+    }
+  };
+
+  const handleContactUs = () => {
+    setCurrentStep(4);
+    setChatStep(0);
+    
+    // Load chat container first, then messages after 1 second delay
+    setTimeout(() => {
+      setChatStep(0.5); // Show initial message
+    }, 1000);
+  };
+
+  const handleChatProgression = () => {
+    setChatStep(chatStep + 1);
+    
+    // Add staggered delays for messages to appear
+    if (chatStep === 0) {
+      // First progression - show messages with delays
+      setTimeout(() => {
+        // User response appears first
+        setChatStep(1);
+      }, 500);
+      
+      setTimeout(() => {
+        // IVA response appears
+        setChatStep(1.5);
+      }, 1500);
+      
+      setTimeout(() => {
+        // IVA question appears
+        setChatStep(1);
+      }, 2500);
+    } else if (chatStep === 1) {
+      // Second progression - show final messages with delays
+      setTimeout(() => {
+        // User response appears first
+        setChatStep(2);
+      }, 500);
+      
+      setTimeout(() => {
+        // IVA confirmation appears
+        setChatStep(2);
+      }, 1500);
     }
   };
 
   const resetConversation = () => {
     setCurrentStep(0);
+    setChatStep(0);
   };
 
   return (
@@ -172,8 +229,10 @@ const Prototype1 = () => {
                         </div>
                       </>
                     ) : (
-                      /* Step 4: PayNearMe Consumer Flow - Complete app replacement */
-                      <div className="animate-fadeIn h-full">
+                      <>
+                        {/* Step 3: PayNearMe Consumer Flow */}
+                        {currentStep === 3 && (
+                          <div className="animate-fadeIn h-full">
                         {/* PayNearMe App Interface */}
                         <div className="bg-white h-full">
                           {/* App Header */}
@@ -189,7 +248,7 @@ const Prototype1 = () => {
                           {/* Main Content */}
                           <div className="p-4">
                             {/* Payment Unsuccessful Alert */}
-                            <div className="bg-white border-l-3 border-[#F04438] border border-[#F04438] rounded p-3 flex items-center space-x-2 shadow-lg mb-4">
+                            <div className="bg-white border-l-3 border-[#F04438] rounded p-3 flex items-center space-x-2 shadow-lg mb-4">
                               <i className="fas fa-exclamation-triangle text-[#F04438] text-lg"></i>
                               <div className="text-[#1D2939]">
                                 <div className="font-bold text-sm">Payment Unsuccessful</div>
@@ -211,7 +270,7 @@ const Prototype1 = () => {
                             <div className="text-center mb-6">
                               <h2 className="text-[#101828] text-xl font-bold mb-3">Payment Unsuccessful</h2>
                               <p className="text-[#101828] text-sm font-medium leading-5">
-                                We encountered an issue with your bank account. Please choose a different payment method below, or chat with us to resolve the issue.
+                                We encountered an issue with your $450.00 payment to Freehold Financial. Please choose a different payment method below, or chat with us to resolve the issue.
                               </p>
                             </div>
 
@@ -230,7 +289,7 @@ const Prototype1 = () => {
                                     <div className="text-[#344054] text-xs">Service Fee - $1.99</div>
                                   </div>
                                 </div>
-                                <div className="bg-gradient-to-r from-[#4566D7] to-[#4566D7] text-white px-3 py-2 rounded text-sm font-semibold cursor-pointer hover:from-[#3B5BC7] hover:to-[#3B5BC7] transition-all duration-200">
+                                <div className="bg-gradient-to-r from-[#4566D7] to-[#4566D7] text-white px-3 py-2 rounded text-sm font-semibold cursor-pointer hover:from-[#3B5BC7] hover:to-[#3B5BC7] transition-all duration-200" onClick={handleContactUs}>
                                   Contact Us
                                 </div>
                               </div>
@@ -273,6 +332,274 @@ const Prototype1 = () => {
                           </div>
                         </div>
                       </div>
+                        )}
+
+                                                {/* Step 4: Web Chat Experience (Shows after Contact Us is clicked) */}
+                        {currentStep >= 4 && (
+                          <div className="animate-fadeIn h-full">
+                            {/* Web Chat Interface */}
+                            <div className="bg-white h-full flex flex-col">
+                              {/* Chat Header - Freehold Financial Branding */}
+                              <div className="bg-[#4566D7] px-5 py-3 flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
+                                  <div className="w-6 h-6 flex items-center justify-center">
+                                    <i className="fas fa-university text-white text-sm"></i>
+                                  </div>
+                                  <div className="text-white text-sm font-medium">Freehold Financial</div>
+                                </div>
+                                <div className="w-6 h-6 flex items-center justify-center">
+                                  <i className="fas fa-times text-white text-sm"></i>
+                                </div>
+                              </div>
+
+                              {/* Chat Messages */}
+                              <div ref={chatMessagesRef} className="flex-1 p-4 space-y-4 overflow-y-auto">
+                                {/* Initial Content - Only shows after 1 second delay */}
+                                {chatStep >= 0.5 && (
+                                  <>
+                                    {/* Freehold Financial Omnichannel Message */}
+                                    <div className="flex justify-start animate-fadeIn">
+                                      <div className="bg-gray-200 rounded-lg px-4 py-3 max-w-[80%]">
+                                        <p className="text-gray-800 text-sm">Hi James, do you need assistance with your recent payment issue?</p>
+                                      </div>
+                                    </div>
+
+                                    {/* Failed Payment Details Card */}
+                                    <div className="flex justify-start animate-fadeIn">
+                                      <div className="bg-white border border-gray-200 rounded-lg p-4 max-w-[80%] shadow-sm">
+                                        <div className="flex items-center justify-between mb-3">
+                                          <h4 className="text-sm font-semibold text-gray-800">Failed Payment Details</h4>
+                                          <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
+                                            <i className="fas fa-exclamation-triangle text-red-500 text-xs"></i>
+                                          </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                          <div className="flex items-center space-x-3">
+                                            <div className="w-10 h-7 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center">
+                                              <i className="fas fa-credit-card text-white text-xs"></i>
+                                            </div>
+                                            <div>
+                                              <p className="text-sm font-medium text-gray-800">Debit Card ending in 3469</p>
+                                              <p className="text-xs text-gray-500">Service Fee: $1.99</p>
+                                            </div>
+                                          </div>
+                                          <div className="pt-2 border-t border-gray-100">
+                                            <div className="flex justify-between items-center">
+                                              <span className="text-sm text-gray-600">Payment Amount:</span>
+                                              <span className="text-lg font-bold text-red-600">$450.00</span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </>
+                                )}
+
+                                {/* Progressive Chat Messages */}
+
+                                {chatStep >= 1 && (
+                                  <>
+                                    {/* User Response */}
+                                    <div className="flex justify-end animate-fadeIn">
+                                      <div className="bg-[#4566D7] rounded-lg px-4 py-3 max-w-[80%]">
+                                        <p className="text-sm text-white">Yes, help me fix this payment</p>
+                                      </div>
+                                    </div>
+
+                                    {/* IVA Response - Combined Message */}
+                                    {chatStep >= 1.5 && (
+                                      <div className="flex justify-start animate-fadeIn">
+                                        <div className="bg-gray-200 rounded-lg px-4 py-3 max-w-[80%]">
+                                          <p className="text-gray-800 text-sm">Your bank account ending in 3469 has been blocked due to multiple instances of insufficient funds returns. I can unblock it as a one-time courtesy if you'd like.</p>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </>
+                                )}
+
+                                {chatStep >= 2 && (
+                                  <>
+                                    {/* User Response */}
+                                    <div className="flex justify-end animate-fadeIn">
+                                      <div className="bg-[#4566D7] rounded-lg px-4 py-3 max-w-[80%]">
+                                        <p className="text-sm text-white">Yes</p>
+                                      </div>
+                                    </div>
+
+                                    {/* IVA Confirmation */}
+                                    <div className="flex justify-start animate-fadeIn">
+                                      <div className="bg-gray-200 rounded-lg px-4 py-3 max-w-[80%]">
+                                        <p className="text-gray-800 text-sm">Ok, your bank account ending in 3469 has been unblocked. I can help you complete your payment.</p>
+                                      </div>
+                                    </div>
+
+                                    {/* Payment Form */}
+                                    <div className="flex justify-start animate-fadeIn">
+                                      <div className="bg-white border border-gray-200 rounded-lg p-3 max-w-[88%] shadow-sm">
+                                        {/* Account Information */}
+                                        <div className="mb-3">
+                                          <h3 className="text-base font-bold text-gray-800 mb-1">Freehold Financial</h3>
+                                          <p className="text-xs text-gray-600 mb-2">Account: 00019256789</p>
+                                          <div className="flex justify-between items-center">
+                                            <span className="text-xs font-medium text-gray-700">Payment Date</span>
+                                            <div className="flex items-center space-x-2 bg-white border border-gray-200 rounded-md px-2 py-1">
+                                              <i className="fas fa-calendar text-[#4566D7] text-xs"></i>
+                                              <span className="text-xs font-medium text-gray-800">August 31st, 2025</span>
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        {/* Payment Method Selection */}
+                                        <div className="mb-3">
+                                          <p className="text-xs font-medium text-gray-700 mb-2">Select Payment Method:</p>
+                                          <div className="flex space-x-2 overflow-x-auto pb-1 scrollbar-hide">
+                                            <button className="bg-white border-2 border-[#4566D7] p-2 rounded-md flex flex-col items-center justify-center min-w-[60px] flex-shrink-0">
+                                              <i className="fas fa-credit-card text-[#4566D7] text-sm mb-1"></i>
+                                              <span className="text-xs text-[#4566D7] font-medium">**3469</span>
+                                            </button>
+                                            <button className="bg-white border border-gray-300 p-2 rounded-md flex flex-col items-center justify-center min-w-[60px] flex-shrink-0 hover:border-[#4566D7] transition-colors">
+                                              <i className="fas fa-university text-gray-600 text-sm mb-1"></i>
+                                              <span className="text-xs text-gray-600">Bank</span>
+                                            </button>
+                                            <button className="bg-white border border-gray-300 p-2 rounded-md flex flex-col items-center justify-center min-w-[60px] flex-shrink-0 hover:border-[#4566D7] transition-colors">
+                                              <i className="fab fa-paypal text-gray-600 text-sm mb-1"></i>
+                                              <span className="text-xs text-gray-600">PayPal</span>
+                                            </button>
+                                            <button className="bg-white border border-gray-300 p-2 rounded-md flex flex-col items-center justify-center min-w-[60px] flex-shrink-0 hover:border-[#4566D7] transition-colors">
+                                              <i className="fas fa-wallet text-gray-600 text-sm mb-1"></i>
+                                              <span className="text-xs text-gray-600">Venmo</span>
+                                            </button>
+                                            <button className="bg-white border border-gray-300 p-2 rounded-md flex flex-col items-center justify-center min-w-[60px] flex-shrink-0 hover:border-[#4566D7] transition-colors">
+                                              <i className="fas fa-mobile-alt text-gray-600 text-sm mb-1"></i>
+                                              <span className="text-xs text-gray-600">CashApp</span>
+                                            </button>
+                                          </div>
+                                        </div>
+
+                                        {/* Payment Amount and Complete Button */}
+                                        <div className="mb-3">
+                                          <p className="text-xs font-medium text-gray-700 mb-1">Payment Amount</p>
+                                          <div className="flex items-center space-x-2">
+                                            <div className="bg-white border-2 border-gray-200 rounded-md px-2 py-1.5 flex-1">
+                                              <span className="text-sm font-bold text-gray-800">$450.00</span>
+                                            </div>
+                                            <button className="bg-[#4566D7] hover:bg-[#3B5BC7] text-white px-4 py-1.5 rounded-md text-sm font-medium transition-colors shadow-sm">
+                                              Pay
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+
+                          {/* Quick Reply Buttons */}
+                          {chatStep >= 0.5 && chatStep < 1 && (
+                            <div className="px-4 py-3 space-y-2">
+                              <div className="flex space-x-2">
+                                <button 
+                                  className="bg-[#4566D7] hover:bg-[#3B5BC7] text-white px-4 py-2 rounded text-sm font-medium transition-colors"
+                                  onClick={handleChatProgression}
+                                >
+                                  Yes, help me fix this payment
+                                </button>
+                                <button className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded text-sm transition-colors">
+                                  I have a different question
+                                </button>
+                                <button className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded text-sm transition-colors">
+                                  Talk to a human agent
+                                </button>
+                              </div>
+                            </div>
+                          )}
+
+                          {chatStep >= 1.5 && chatStep < 2 && (
+                            <div className="px-4 py-3 space-y-2">
+                              <div className="flex space-x-2">
+                                <button 
+                                  className="bg-[#4566D7] hover:bg-[#3B5BC7] text-white px-4 py-2 rounded text-sm font-medium transition-colors"
+                                  onClick={handleChatProgression}
+                                >
+                                  Yes
+                                </button>
+                                <button className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded text-sm transition-colors">
+                                  I'll pay another way
+                                </button>
+                                <button className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded text-sm transition-colors">
+                                  Live Agent
+                                </button>
+                              </div>
+                            </div>
+                          )}
+
+
+
+                          {/* Text Input */}
+                          <div className="px-4 py-3 border-t border-gray-200">
+                            <div className="flex items-center space-x-2">
+                                                              <input 
+                                  type="text" 
+                                  placeholder="Type your message here..." 
+                                  className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
+                                />
+                              <button className="w-8 h-8 bg-gray-600 rounded flex items-center justify-center">
+                                <i className="fas fa-paper-plane text-white text-xs"></i>
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Virtual Keyboard */}
+                          <div className="px-4 py-3 bg-gray-100 border-t border-gray-200">
+                            <div className="space-y-2">
+                              {/* Top Row */}
+                              <div className="flex justify-center space-x-1">
+                                {['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'].map(key => (
+                                  <button key={key} className="w-8 h-8 bg-white border border-gray-300 rounded text-xs font-medium hover:bg-gray-50">
+                                    {key}
+                                  </button>
+                                ))}
+                              </div>
+                              {/* Middle Row */}
+                              <div className="flex justify-center space-x-1">
+                                {['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'].map(key => (
+                                  <button key={key} className="w-8 h-8 bg-white border border-gray-300 rounded text-xs font-medium hover:bg-gray-50">
+                                    {key}
+                                  </button>
+                                ))}
+                              </div>
+                              {/* Bottom Row */}
+                              <div className="flex justify-center space-x-1">
+                                <button className="w-12 h-8 bg-white border border-gray-300 rounded text-xs font-medium hover:bg-gray-50">
+                                  <i className="fas fa-arrow-up text-gray-600"></i>
+                                </button>
+                                {['Z', 'X', 'C', 'V', 'B', 'N', 'M'].map(key => (
+                                  <button key={key} className="w-8 h-8 bg-white border border-gray-300 rounded text-xs font-medium hover:bg-gray-50">
+                                    {key}
+                                  </button>
+                                ))}
+                                <button className="w-12 h-8 bg-white border border-gray-300 rounded text-xs font-medium hover:bg-gray-50">
+                                  <i className="fas fa-backspace text-gray-600"></i>
+                                </button>
+                              </div>
+                              {/* Special Keys */}
+                              <div className="flex justify-center space-x-1">
+                                <button className="w-12 h-8 bg-white border border-gray-300 rounded text-xs font-medium hover:bg-gray-50">123</button>
+                                <button className="w-8 h-8 bg-white border border-gray-300 rounded text-xs font-medium hover:bg-gray-50">
+                                  <i className="fas fa-globe text-gray-600"></i>
+                                </button>
+                                <button className="w-8 h-8 bg-white border border-gray-500 rounded text-xs font-medium hover:bg-gray-50">
+                                  <i className="fas fa-microphone text-gray-600"></i>
+                                </button>
+                                <button className="w-24 h-8 bg-white border border-gray-300 rounded text-xs font-medium hover:bg-gray-50">space</button>
+                                <button className="w-12 h-8 bg-white border border-gray-300 rounded text-xs font-medium hover:bg-gray-50">return</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -283,7 +610,7 @@ const Prototype1 = () => {
                 <p className="text-gray-400 text-sm">iPhone 16 Pro - Demo Size</p>
                 <p className="text-gray-500 text-xs mt-1">Larger mockup for better visibility</p>
                 <p className="text-blue-400 text-xs mt-2 font-medium">Click anywhere on screen to advance</p>
-                <p className="text-gray-500 text-xs mt-1">Step {currentStep + 1} of 4</p>
+                <p className="text-gray-500 text-xs mt-1">Step {currentStep + 1} of 5</p>
               </div>
             </div>
           </div>
