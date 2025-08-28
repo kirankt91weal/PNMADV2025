@@ -1,7 +1,7 @@
 // src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import HelloWorld from './components/HelloWorld';
+import Prototype1 from './components/Prototype1';
 
 // Landing page component
 const LandingPage = () => {
@@ -228,7 +228,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/iva-simulator" element={<HelloWorld />} />
+        <Route path="/iva-simulator" element={<Prototype1 />} />
       </Routes>
     </Router>
   );
