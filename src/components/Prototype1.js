@@ -178,11 +178,11 @@ const Prototype1 = () => {
                         <div className="bg-white h-full">
                           {/* App Header */}
                           <div className="bg-[#4566D7] px-5 py-3 flex items-center justify-between">
-                            <div className="w-6 h-6 bg-white rounded flex items-center justify-center">
-                              <i className="fas fa-home text-[#4566D7] text-sm"></i>
+                            <div className="w-6 h-6 flex items-center justify-center">
+                              <i className="fas fa-home text-white text-sm"></i>
                             </div>
-                            <div className="w-6 h-6 bg-white rounded flex items-center justify-center">
-                              <i className="fas fa-bars text-[#4566D7] text-sm"></i>
+                            <div className="w-6 h-6 flex items-center justify-center">
+                              <i className="fas fa-bars text-white text-sm"></i>
                             </div>
                           </div>
 
@@ -209,9 +209,9 @@ const Prototype1 = () => {
 
                             {/* Main Message */}
                             <div className="text-center mb-6">
-                              <h2 className="text-[#101828] text-lg font-bold mb-2">Payment Unsuccessful</h2>
-                              <p className="text-[#667085] text-sm leading-5">
-                                We encountered an issue with your debit card payment. Please choose a different payment method below.
+                              <h2 className="text-[#101828] text-xl font-bold mb-3">Payment Unsuccessful</h2>
+                              <p className="text-[#101828] text-sm font-medium leading-5">
+                                We encountered an issue with your bank account. Please choose a different payment method below, or chat with us to resolve the issue.
                               </p>
                             </div>
 
@@ -219,8 +219,11 @@ const Prototype1 = () => {
                             <div className="bg-[#FFFBFA] border border-[#FDA29B] rounded-lg p-3 mb-6">
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center space-x-3">
-                                  <div className="w-10 h-7 bg-white border border-[#D0D5DD] rounded flex items-center justify-center">
+                                  <div className="w-10 h-7 bg-white border border-[#D0D5DD] rounded flex items-center justify-center relative">
                                     <i className="fas fa-credit-card text-[#0076DE] text-sm"></i>
+                                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                                      <i className="fas fa-exclamation text-white text-xs"></i>
+                                    </div>
                                   </div>
                                   <div>
                                     <div className="font-bold text-[#101828] text-sm">Debit 3469</div>
