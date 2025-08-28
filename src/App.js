@@ -1,7 +1,16 @@
 // src/App.js
-import React from "react";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import HelloWorld from './components/HelloWorld';
 
-function App() {
+// Landing page component
+const LandingPage = () => {
+  const navigate = useNavigate();
+
+  const handleTryIt = () => {
+    navigate('/iva-simulator');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Header with Logo */}
@@ -53,7 +62,10 @@ function App() {
                 </div>
               </div>
               <div className="w-full">
-                <button className="w-full group relative bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-3 px-8 rounded-xl text-base transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                <button 
+                  onClick={handleTryIt}
+                  className="w-full group relative bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-3 px-8 rounded-xl text-base transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                >
                   <span className="relative z-10">Try it</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
                 </button>
@@ -81,9 +93,8 @@ function App() {
                 </div>
               </div>
               <div className="w-full">
-                <button className="w-full group relative bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold py-3 px-8 rounded-xl text-base transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                  <span className="relative z-10">Try it</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                <button disabled className="w-full bg-gray-600 text-gray-400 font-semibold py-3 px-8 rounded-xl text-base cursor-not-allowed opacity-50">
+                  Coming Soon
                 </button>
               </div>
             </div>
@@ -109,9 +120,8 @@ function App() {
                 </div>
               </div>
               <div className="w-full">
-                <button className="w-full group relative bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-8 rounded-xl text-base transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                  <span className="relative z-10">Try it</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-green-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                <button disabled className="w-full bg-gray-600 text-gray-400 font-semibold py-3 px-8 rounded-xl text-base cursor-not-allowed opacity-50">
+                  Coming Soon
                 </button>
               </div>
             </div>
@@ -137,9 +147,8 @@ function App() {
                 </div>
               </div>
               <div className="w-full">
-                <button className="w-full group relative bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-8 rounded-xl text-base transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                  <span className="relative z-10">Try it</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-red-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                <button disabled className="w-full bg-gray-600 text-gray-400 font-semibold py-3 px-8 rounded-xl text-base cursor-not-allowed opacity-50">
+                  Coming Soon
                 </button>
               </div>
             </div>
@@ -165,9 +174,8 @@ function App() {
                 </div>
               </div>
               <div className="w-full">
-                <button className="w-full group relative bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold py-3 px-8 rounded-xl text-base transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                  <span className="relative z-10">Try it</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                <button disabled className="w-full bg-gray-600 text-gray-400 font-semibold py-3 px-8 rounded-xl text-base cursor-not-allowed opacity-50">
+                  Coming Soon
                 </button>
               </div>
             </div>
@@ -193,9 +201,8 @@ function App() {
                 </div>
               </div>
               <div className="w-full">
-                <button className="w-full group relative bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-semibold py-3 px-8 rounded-xl text-base transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                  <span className="relative z-10">Try it</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-yellow-600 to-yellow-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                <button disabled className="w-full bg-gray-600 text-gray-400 font-semibold py-3 px-8 rounded-xl text-base cursor-not-allowed opacity-50">
+                  Coming Soon
                 </button>
               </div>
             </div>
@@ -207,11 +214,23 @@ function App() {
       <div className="absolute bottom-8 right-8">
         <div className="w-16 h-16 bg-gradient-to-br from-orange-500 via-orange-600 to-blue-500 rounded-2xl flex items-center justify-center shadow-2xl">
           <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
-            <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-blue-500 rounded-lg"></div>
+            <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-blue-500 rounded-lg"></div>
           </div>
         </div>
       </div>
     </div>
+  );
+};
+
+// Main App component with routing
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/iva-simulator" element={<HelloWorld />} />
+      </Routes>
+    </Router>
   );
 }
 
