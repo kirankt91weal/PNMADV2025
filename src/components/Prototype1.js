@@ -8,6 +8,7 @@ const Prototype1 = () => {
   const [paymentSuccessful, setPaymentSuccessful] = useState(false);
   const [processingPayment, setProcessingPayment] = useState(false);
   const [showCallScreen, setShowCallScreen] = useState(false);
+  const [isLoadingChat, setIsLoadingChat] = useState(false);
   const chatMessagesRef = useRef(null);
 
   // Auto-scroll to bottom whenever chat step changes or payment becomes successful
@@ -27,12 +28,19 @@ const Prototype1 = () => {
   };
 
   const handleContactUs = () => {
+    // Prevent multiple rapid clicks from causing race conditions
+    if (isLoadingChat) {
+      return;
+    }
+    
+    setIsLoadingChat(true);
     setCurrentStep(4);
     setChatStep(0);
     
     // Load chat container first, then messages after 1 second delay
     setTimeout(() => {
       setChatStep(0.5); // Show initial message
+      setIsLoadingChat(false); // Allow future clicks after message loads
     }, 1000);
   };
 
@@ -76,6 +84,7 @@ const Prototype1 = () => {
     setPaymentSuccessful(false);
     setProcessingPayment(false);
     setShowCallScreen(false);
+    setIsLoadingChat(false);
   };
 
   const handlePaymentSuccess = () => {
@@ -104,13 +113,14 @@ const Prototype1 = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Header */}
-      <header className="px-8 py-6 border-b border-white/10 backdrop-blur-sm bg-white/5">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 via-blue-600 to-green-500 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-sm">PNM</span>
-            </div>
-            <span className="text-white font-semibold text-xl tracking-tight">PayNearMe</span>
+      <header className="h-24 border-b border-white/10 backdrop-blur-sm bg-white/5 relative">
+        <div className="max-w-7xl mx-auto px-8 flex items-center justify-between h-full">
+          <div className="flex items-center">
+            <img 
+              src="/logo.png" 
+              alt="PayNearMe Logo" 
+              className="w-56 h-56 rounded-xl shadow-2xl object-contain animate-pulse opacity-90"
+            />
           </div>
           <div className="flex items-center space-x-4">
             <button
@@ -318,8 +328,22 @@ const Prototype1 = () => {
                                     <div className="text-[#344054] text-xs">Service Fee - $1.99</div>
                                   </div>
                                 </div>
-                                <div className="bg-gradient-to-r from-[#4566D7] to-[#4566D7] text-white px-3 py-2 rounded text-sm font-semibold cursor-pointer hover:from-[#3B5BC7] hover:to-[#3B5BC7] transition-all duration-200" onClick={handleContactUs}>
-                                  Contact Us
+                                <div 
+                                  className={`px-3 py-2 rounded text-sm font-semibold transition-all duration-200 ${
+                                    isLoadingChat 
+                                      ? 'bg-gray-400 cursor-not-allowed' 
+                                      : 'bg-gradient-to-r from-[#4566D7] to-[#4566D7] text-white cursor-pointer hover:from-[#3B5BC7] hover:to-[#3B5BC7]'
+                                  }`}
+                                  onClick={isLoadingChat ? undefined : handleContactUs}
+                                >
+                                  {isLoadingChat ? (
+                                    <div className="flex items-center space-x-2">
+                                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                      <span>Loading...</span>
+                                    </div>
+                                  ) : (
+                                    'Contact Us'
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -833,6 +857,16 @@ const Prototype1 = () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Logo - Bottom Right */}
+      <div className="fixed bottom-8 right-8 z-50">
+        <div className="w-24 h-24 rounded-2xl shadow-2xl flex items-center justify-center animate-pulse opacity-30">
+          <svg width="72" height="72" viewBox="0 0 112 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M35.9995 111.001C55.8811 111.001 71.999 94.8835 71.999 75.0015L71.999 39.001L35.9995 39.001C16.1179 39.001 -4.01725e-06 55.1184 -5.75548e-06 75.0015C-7.49362e-06 94.8835 16.1179 111.001 35.9995 111.001M35.9995 57.0015L53.999 57.0015L53.999 75.0015C53.999 84.9418 45.9408 93.001 35.9995 93.001C26.0582 93.001 17.999 84.9418 17.999 75.0015C17.999 65.0598 26.0582 57.0015 35.9995 57.0015" fill="#0076DE"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M83.999 0C68.5354 0 55.999 12.536 55.999 28V56.0008H83.999C99.4627 56.0008 111.999 43.4648 111.999 28C111.999 12.536 99.4627 0 83.999 0M83.999 42.0001H69.9992V28C69.9992 20.2685 76.2668 14.0001 83.999 14.0001C91.7312 14.0001 97.9995 20.2685 97.9995 28C97.9995 35.7325 91.7312 42.0001 83.999 42.0001" fill="#FEC84B"/>
+          </svg>
         </div>
       </div>
     </div>

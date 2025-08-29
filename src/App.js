@@ -13,14 +13,15 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      {/* Header with Logo */}
-      <header className="px-8 py-6 border-b border-white/10 backdrop-blur-sm bg-white/5">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 via-blue-600 to-green-500 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-sm">PNM</span>
-            </div>
-            <span className="text-white font-semibold text-xl tracking-tight">PayNearMe</span>
+      {/* Header */}
+      <header className="h-24 border-b border-white/10 backdrop-blur-sm bg-white/5 relative">
+        <div className="max-w-7xl mx-auto px-8 flex items-center justify-between h-full">
+          <div className="flex items-center">
+            <img 
+              src="/logo.png" 
+              alt="PayNearMe Logo" 
+              className="w-56 h-56 rounded-xl shadow-2xl object-contain animate-pulse opacity-90"
+            />
           </div>
         </div>
       </header>
@@ -36,7 +37,7 @@ const LandingPage = () => {
             </span>
           </h1>
           <p className="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            All information shared in this prototype is confidential. This includes information shared by PayNearMe, or by any participant sharing opinions or proprietary company information. Please do not share any information outside of this group.
           </p>
         </div>
 
@@ -64,10 +65,10 @@ const LandingPage = () => {
               <div className="w-full">
                 <button 
                   onClick={handleTryIt}
-                  className="w-full group relative bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-3 px-8 rounded-xl text-base transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="w-full group relative bg-gradient-to-r from-blue-400 to-green-400 hover:from-blue-500 hover:to-green-500 text-white font-semibold py-3 px-8 rounded-xl text-base transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
                   <span className="relative z-10">Try it</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-green-500 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
                 </button>
               </div>
             </div>
@@ -211,11 +212,12 @@ const LandingPage = () => {
       </div>
 
       {/* Logo - Bottom Right */}
-      <div className="absolute bottom-8 right-8">
-        <div className="w-16 h-16 bg-gradient-to-br from-orange-500 via-orange-600 to-blue-500 rounded-2xl flex items-center justify-center shadow-2xl">
-          <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
-            <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-blue-500 rounded-lg"></div>
-          </div>
+      <div className="fixed bottom-8 right-8 z-50">
+        <div className="w-24 h-24 rounded-2xl shadow-2xl flex items-center justify-center animate-pulse opacity-30">
+          <svg width="72" height="72" viewBox="0 0 112 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M35.9995 111.001C55.8811 111.001 71.999 94.8835 71.999 75.0015L71.999 39.001L35.9995 39.001C16.1179 39.001 -4.01725e-06 55.1184 -5.75548e-06 75.0015C-7.49362e-06 94.8835 16.1179 111.001 35.9995 111.001M35.9995 57.0015L53.999 57.0015L53.999 75.0015C53.999 84.9418 45.9408 93.001 35.9995 93.001C26.0582 93.001 17.999 84.9418 17.999 75.0015C17.999 65.0598 26.0582 57.0015 35.9995 57.0015" fill="#0076DE"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M83.999 0C68.5354 0 55.999 12.536 55.999 28V56.0008H83.999C99.4627 56.0008 111.999 43.4648 111.999 28C111.999 12.536 99.4627 0 83.999 0M83.999 42.0001H69.9992V28C69.9992 20.2685 76.2668 14.0001 83.999 14.0001C91.7312 14.0001 97.9995 20.2685 97.9995 28C97.9995 35.7325 91.7312 42.0001 83.999 42.0001" fill="#FEC84B"/>
+          </svg>
         </div>
       </div>
     </div>
