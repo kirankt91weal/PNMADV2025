@@ -1,4 +1,31 @@
-# Getting Started with Create React App
+# PayNearMe IVA Prototype
+
+This project demonstrates PayNearMe's Omni-Channel IVA (Intelligent Virtual Assistant) Experience, showcasing seamless customer support across SMS, Mobile App, Web Chat, and Voice channels.
+
+## About the Prototype
+
+The prototype simulates a complete customer journey from payment failure to successful resolution and agent connection. It demonstrates:
+- **Multi-channel experience** (SMS → Mobile App → Web Chat → Voice)
+- **Intelligent payment failure resolution** with IVA assistance
+- **Proactive customer service** based on payment patterns
+- **Seamless context-sharing** across all touchpoints
+
+## Testing the Prototype
+
+We've created comprehensive test cases to ensure the prototype works correctly. See `test-cases.md` for a complete testing guide covering:
+- State management and navigation flow
+- Chat progression and timing
+- Payment processing and success flows
+- Agent connection and call screen functionality
+- Edge cases and breaking point identification
+
+To run through the test cases manually:
+1. Start the app with `npm start`
+2. Navigate to the IVA Simulator
+3. Follow the interactive flow step-by-step
+4. Use the test cases document to verify each functionality
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
