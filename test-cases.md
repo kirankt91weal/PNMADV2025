@@ -25,7 +25,7 @@ This document contains comprehensive test cases for the PayNearMe IVA Prototype 
 #### State Reset Functionality
 - [x] `resetConversation()` resets all states to initial values
 - [x] Reset button in header works correctly
-- [x] Navigation to home page works
+- [x] Navigation to home page works 
 
 ### 2. Screen Navigation Tests
 

@@ -23,7 +23,8 @@ const Prototype1 = () => {
       setCurrentStep(currentStep + 1);
     } else if (currentStep === 3) {
       // When on step 3 (PayNearMe app), clicking advances to web chat
-      setCurrentStep(4);
+      // Use the same logic as handleContactUs to properly initialize chat
+      handleContactUs();
     }
   };
 
