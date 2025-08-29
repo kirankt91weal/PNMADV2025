@@ -19,10 +19,10 @@ const Prototype1 = () => {
   }, [chatStep, paymentSuccessful]);
 
   const handleScreenClick = () => {
-    if (currentStep < 3) {
+    if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
-    } else if (currentStep === 3) {
-      // When on step 3 (PayNearMe app), clicking advances to web chat
+    } else if (currentStep === 4) {
+      // When on step 4 (PayNearMe app), clicking advances to web chat
       // Use the same logic as handleContactUs to properly initialize chat
       handleContactUs();
     }
@@ -35,7 +35,7 @@ const Prototype1 = () => {
     }
     
     setIsLoadingChat(true);
-    setCurrentStep(4);
+    setCurrentStep(5);
     setChatStep(0);
     
     // Load chat container first, then messages after 1 second delay
@@ -213,9 +213,23 @@ const Prototype1 = () => {
                   
                   {/* App Content */}
                   <div className="bg-gray-100 h-full cursor-pointer" onClick={handleScreenClick}>
-                    {/* Show iMessage for steps 0-2, PayNearMe app for step 3+ */}
-                    {currentStep < 3 ? (
+                    {/* Step 0: PayNearMe logo with black background */}
+                    {currentStep === 0 ? (
+                      <div className="flex items-start justify-center h-full bg-black pt-40">
+                        <div className="text-center relative">
+                          <img 
+                            src="/logo.png" 
+                            alt="PayNearMe Logo" 
+                            className="w-64 h-64 mx-auto object-contain animate-pulse opacity-90"
+                          />
+                          <p className="text-white text-lg font-medium animate-pulse opacity-90 absolute left-1/2 transform -translate-x-1/2 top-44 whitespace-nowrap">Tap to start demo</p>
+                        </div>
+                      </div>
+                    ) : (
                       <>
+                        {/* Show iMessage for steps 1-3, PayNearMe app for step 4+ */}
+                        {currentStep < 4 ? (
+                          <>
                         {/* iMessage Header */}
                         <div className="bg-white border-b border-gray-200 px-5 py-4 flex items-center space-x-4">
                           <button className="text-blue-500">
@@ -244,8 +258,8 @@ const Prototype1 = () => {
                             </div>
                           </div>
 
-                          {/* Message 2 - From User (Shows after step 1) */}
-                          {currentStep >= 1 && (
+                          {/* Message 2 - From User (Shows after step 2) */}
+                          {currentStep >= 2 && (
                             <div className="flex justify-end animate-fadeIn">
                               <div className="bg-blue-500 rounded-2xl px-4 py-3 max-w-[75%]">
                                 <p className="text-sm text-white leading-relaxed">
@@ -255,8 +269,8 @@ const Prototype1 = () => {
                             </div>
                           )}
 
-                          {/* Message 3 - From Freehold Financial (Shows after step 2) */}
-                          {currentStep >= 2 && (
+                          {/* Message 3 - From Freehold Financial (Shows after step 3) */}
+                          {currentStep >= 3 && (
                             <div className="flex justify-start animate-fadeIn">
                               <div className="bg-white rounded-2xl px-4 py-3 max-w-[75%] shadow-sm">
                                 <p className="text-sm text-gray-800 leading-relaxed">
@@ -270,8 +284,8 @@ const Prototype1 = () => {
                       </>
                     ) : (
                       <>
-                        {/* Step 3: PayNearMe Consumer Flow */}
-                        {currentStep === 3 && (
+                        {/* Step 4: PayNearMe Consumer Flow */}
+                        {currentStep === 4 && (
                           <div className="animate-fadeIn h-full">
                         {/* PayNearMe App Interface */}
                         <div className="bg-white h-full">
@@ -388,8 +402,8 @@ const Prototype1 = () => {
                       </div>
                         )}
 
-                                                {/* Step 4: Web Chat Experience (Shows after Contact Us is clicked) */}
-                        {currentStep >= 4 && (
+                                                {/* Step 5: Web Chat Experience (Shows after Contact Us is clicked) */}
+                        {currentStep >= 5 && (
                           <div className="animate-fadeIn h-full">
                             {/* Web Chat Interface */}
                             <div className="bg-white h-full flex flex-col">
@@ -843,6 +857,8 @@ const Prototype1 = () => {
                             </div>
                           </div>
                         )}
+                        </>
+                      )}
                       </>
                     )}
                   </div>
@@ -854,7 +870,7 @@ const Prototype1 = () => {
                 <p className="text-gray-400 text-sm">iPhone 16 Pro - Demo Size</p>
                 <p className="text-gray-500 text-xs mt-1">Larger mockup for better visibility</p>
                 <p className="text-blue-400 text-xs mt-2 font-medium">Click anywhere on screen to advance</p>
-                <p className="text-gray-500 text-xs mt-1">Step {currentStep + 1} of 5</p>
+                <p className="text-gray-500 text-xs mt-1">Step {currentStep + 1} of 6</p>
               </div>
             </div>
           </div>
