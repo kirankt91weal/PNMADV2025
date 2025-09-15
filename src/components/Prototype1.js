@@ -8,7 +8,12 @@ const Prototype1 = () => {
   const [paymentSuccessful, setPaymentSuccessful] = useState(false);
   const [processingPayment, setProcessingPayment] = useState(false);
   const [showCallScreen, setShowCallScreen] = useState(false);
+  const [isLoadingChat, setIsLoadingChat] = useState(false);
+  const [isCallMuted, setIsCallMuted] = useState(false);
+  const [callDuration, setCallDuration] = useState(0);
   const chatMessagesRef = useRef(null);
+  const callAudioRef = useRef(null);
+  const callTimerRef = useRef(null);
 
   // Auto-scroll to bottom whenever chat step changes or payment becomes successful
   useEffect(() => {
@@ -17,22 +22,81 @@ const Prototype1 = () => {
     }
   }, [chatStep, paymentSuccessful]);
 
+  // Handle call screen timer and audio
+  useEffect(() => {
+    if (showCallScreen) {
+      // Start call timer immediately
+      callTimerRef.current = setInterval(() => {
+        setCallDuration(prev => prev + 1);
+      }, 1000);
+    } else {
+      // Stop call audio and timer
+      if (callAudioRef.current) {
+        callAudioRef.current.pause();
+        callAudioRef.current.currentTime = 0;
+      }
+      if (callTimerRef.current) {
+        clearInterval(callTimerRef.current);
+        callTimerRef.current = null;
+      }
+      setCallDuration(0);
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (callTimerRef.current) {
+        clearInterval(callTimerRef.current);
+      }
+    };
+  }, [showCallScreen]);
+
+  // Handle audio playback - start after connection (3 seconds)
+  useEffect(() => {
+    if (showCallScreen && callDuration >= 3 && callAudioRef.current) {
+      // Start call audio when connection is established
+      callAudioRef.current.play().catch(console.error);
+      
+      // Add event listener for when audio ends
+      const handleAudioEnd = () => {
+        // Reset demo to beginning when call audio finishes
+        resetConversation();
+      };
+      
+      callAudioRef.current.addEventListener('ended', handleAudioEnd);
+      
+      // Cleanup event listener
+      return () => {
+        if (callAudioRef.current) {
+          callAudioRef.current.removeEventListener('ended', handleAudioEnd);
+        }
+      };
+    }
+  }, [showCallScreen, callDuration]);
+
   const handleScreenClick = () => {
-    if (currentStep < 3) {
+    if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
-    } else if (currentStep === 3) {
-      // When on step 3 (PayNearMe app), clicking advances to web chat
-      setCurrentStep(4);
+    } else if (currentStep === 4) {
+      // When on step 4 (PayNearMe app), clicking advances to web chat
+      // Use the same logic as handleContactUs to properly initialize chat
+      handleContactUs();
     }
   };
 
   const handleContactUs = () => {
-    setCurrentStep(4);
+    // Prevent multiple rapid clicks from causing race conditions
+    if (isLoadingChat) {
+      return;
+    }
+    
+    setIsLoadingChat(true);
+    setCurrentStep(5);
     setChatStep(0);
     
     // Load chat container first, then messages after 1 second delay
     setTimeout(() => {
       setChatStep(0.5); // Show initial message
+      setIsLoadingChat(false); // Allow future clicks after message loads
     }, 1000);
   };
 
@@ -76,6 +140,37 @@ const Prototype1 = () => {
     setPaymentSuccessful(false);
     setProcessingPayment(false);
     setShowCallScreen(false);
+    setIsLoadingChat(false);
+    setIsCallMuted(false);
+    setCallDuration(0);
+    
+    // Stop any active call audio
+    if (callAudioRef.current) {
+      callAudioRef.current.pause();
+      callAudioRef.current.currentTime = 0;
+    }
+    if (callTimerRef.current) {
+      clearInterval(callTimerRef.current);
+      callTimerRef.current = null;
+    }
+  };
+
+  const handleCallMute = () => {
+    setIsCallMuted(!isCallMuted);
+    if (callAudioRef.current) {
+      callAudioRef.current.muted = !isCallMuted;
+    }
+  };
+
+  const handleCallHangup = () => {
+    setShowCallScreen(false);
+    // Audio cleanup is handled by useEffect
+  };
+
+  const formatCallDuration = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   const handlePaymentSuccess = () => {
@@ -104,13 +199,14 @@ const Prototype1 = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Header */}
-      <header className="px-8 py-6 border-b border-white/10 backdrop-blur-sm bg-white/5">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 via-blue-600 to-green-500 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-sm">PNM</span>
-            </div>
-            <span className="text-white font-semibold text-xl tracking-tight">PayNearMe</span>
+      <header className="h-24 border-b border-white/10 backdrop-blur-sm bg-white/5 relative">
+        <div className="max-w-7xl mx-auto px-8 flex items-center justify-between h-full">
+          <div className="flex items-center">
+            <img 
+              src="/logo.png" 
+              alt="PayNearMe Logo" 
+              className="w-56 h-56 rounded-xl shadow-2xl object-contain animate-pulse opacity-90"
+            />
           </div>
           <div className="flex items-center space-x-4">
             <button
@@ -202,9 +298,23 @@ const Prototype1 = () => {
                   
                   {/* App Content */}
                   <div className="bg-gray-100 h-full cursor-pointer" onClick={handleScreenClick}>
-                    {/* Show iMessage for steps 0-2, PayNearMe app for step 3+ */}
-                    {currentStep < 3 ? (
+                    {/* Step 0: PayNearMe logo with black background */}
+                    {currentStep === 0 ? (
+                      <div className="flex items-start justify-center h-full bg-black pt-40">
+                        <div className="text-center relative">
+                          <img 
+                            src="/logo.png" 
+                            alt="PayNearMe Logo" 
+                            className="w-64 h-64 mx-auto object-contain animate-pulse opacity-90"
+                          />
+                          <p className="text-white text-lg font-medium animate-pulse opacity-90 absolute left-1/2 transform -translate-x-1/2 top-44 whitespace-nowrap">Tap to start demo</p>
+                        </div>
+                      </div>
+                    ) : (
                       <>
+                        {/* Show iMessage for steps 1-3, PayNearMe app for step 4+ */}
+                        {currentStep < 4 ? (
+                          <>
                         {/* iMessage Header */}
                         <div className="bg-white border-b border-gray-200 px-5 py-4 flex items-center space-x-4">
                           <button className="text-blue-500">
@@ -233,8 +343,8 @@ const Prototype1 = () => {
                             </div>
                           </div>
 
-                          {/* Message 2 - From User (Shows after step 1) */}
-                          {currentStep >= 1 && (
+                          {/* Message 2 - From User (Shows after step 2) */}
+                          {currentStep >= 2 && (
                             <div className="flex justify-end animate-fadeIn">
                               <div className="bg-blue-500 rounded-2xl px-4 py-3 max-w-[75%]">
                                 <p className="text-sm text-white leading-relaxed">
@@ -244,8 +354,8 @@ const Prototype1 = () => {
                             </div>
                           )}
 
-                          {/* Message 3 - From Freehold Financial (Shows after step 2) */}
-                          {currentStep >= 2 && (
+                          {/* Message 3 - From Freehold Financial (Shows after step 3) */}
+                          {currentStep >= 3 && (
                             <div className="flex justify-start animate-fadeIn">
                               <div className="bg-white rounded-2xl px-4 py-3 max-w-[75%] shadow-sm">
                                 <p className="text-sm text-gray-800 leading-relaxed">
@@ -259,8 +369,8 @@ const Prototype1 = () => {
                       </>
                     ) : (
                       <>
-                        {/* Step 3: PayNearMe Consumer Flow */}
-                        {currentStep === 3 && (
+                        {/* Step 4: PayNearMe Consumer Flow */}
+                        {currentStep === 4 && (
                           <div className="animate-fadeIn h-full">
                         {/* PayNearMe App Interface */}
                         <div className="bg-white h-full">
@@ -318,8 +428,22 @@ const Prototype1 = () => {
                                     <div className="text-[#344054] text-xs">Service Fee - $1.99</div>
                                   </div>
                                 </div>
-                                <div className="bg-gradient-to-r from-[#4566D7] to-[#4566D7] text-white px-3 py-2 rounded text-sm font-semibold cursor-pointer hover:from-[#3B5BC7] hover:to-[#3B5BC7] transition-all duration-200" onClick={handleContactUs}>
-                                  Contact Us
+                                <div 
+                                  className={`px-3 py-2 rounded text-sm font-semibold transition-all duration-200 ${
+                                    isLoadingChat 
+                                      ? 'bg-gray-400 cursor-not-allowed' 
+                                      : 'bg-gradient-to-r from-[#4566D7] to-[#4566D7] text-white cursor-pointer hover:from-[#3B5BC7] hover:to-[#3B5BC7]'
+                                  }`}
+                                  onClick={isLoadingChat ? undefined : handleContactUs}
+                                >
+                                  {isLoadingChat ? (
+                                    <div className="flex items-center space-x-2">
+                                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                      <span>Loading...</span>
+                                    </div>
+                                  ) : (
+                                    'Contact Us'
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -363,8 +487,8 @@ const Prototype1 = () => {
                       </div>
                         )}
 
-                                                {/* Step 4: Web Chat Experience (Shows after Contact Us is clicked) */}
-                        {currentStep >= 4 && (
+                                                {/* Step 5: Web Chat Experience (Shows after Contact Us is clicked) */}
+                        {currentStep >= 5 && (
                           <div className="animate-fadeIn h-full">
                             {/* Web Chat Interface */}
                             <div className="bg-white h-full flex flex-col">
@@ -764,6 +888,14 @@ const Prototype1 = () => {
                         {/* Call Screen */}
                         {showCallScreen && (
                           <div className="animate-fadeIn h-full absolute inset-0 z-50">
+                            {/* Hidden audio element for call simulation */}
+                            <audio 
+                              ref={callAudioRef}
+                              src="/IVA Demo.mp4"
+                              preload="auto"
+                              style={{ display: 'none' }}
+                            />
+                            
                             <div className="bg-white h-full flex flex-col">
                               {/* Call Header */}
                               <div className="bg-[#4566D7] px-5 py-4 flex items-center justify-between">
@@ -773,9 +905,12 @@ const Prototype1 = () => {
                                   </div>
                                   <div className="text-white text-sm font-medium">Active Call</div>
                                 </div>
-                                <div className="w-6 h-6 flex items-center justify-center">
+                                <button 
+                                  onClick={handleCallHangup}
+                                  className="w-6 h-6 flex items-center justify-center hover:bg-white/10 rounded transition-colors"
+                                >
                                   <i className="fas fa-times text-white text-sm"></i>
-                                </div>
+                                </button>
                               </div>
 
                               {/* Call Content */}
@@ -786,22 +921,43 @@ const Prototype1 = () => {
                                 </div>
                                 
                                 {/* Call Status */}
-                                <h2 className="text-2xl font-bold text-gray-800 mb-2">Connecting to Agent</h2>
-                                <p className="text-gray-600 mb-6">Please wait while we connect you to a VIP agent</p>
+                                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                                  {callDuration < 3 ? 'Connecting to Agent' : 'Connected'}
+                                </h2>
+                                <p className="text-gray-600 mb-6">
+                                  {callDuration < 3 
+                                    ? 'Please wait while we connect you to a VIP agent' 
+                                    : 'You are now speaking with Brian Johnson'
+                                  }
+                                </p>
                                 
                                 {/* Call Timer */}
                                 <div className="bg-gray-100 rounded-full px-6 py-3 mb-6">
-                                  <div className="text-2xl font-mono text-gray-800">00:03</div>
-                                  <div className="text-sm text-gray-600">Estimated wait time</div>
+                                  <div className="text-2xl font-mono text-gray-800">
+                                    {callDuration < 3 ? `00:0${3 - callDuration}` : formatCallDuration(callDuration - 3)}
+                                  </div>
+                                  <div className="text-sm text-gray-600">
+                                    {callDuration < 3 ? 'Estimated wait time' : 'Call duration'}
+                                  </div>
                                 </div>
                                 
                                 {/* Call Controls */}
                                 <div className="flex space-x-4">
-                                  <button className="w-16 h-16 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center shadow-lg transition-colors">
+                                  <button 
+                                    onClick={handleCallHangup}
+                                    className="w-16 h-16 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center shadow-lg transition-colors"
+                                  >
                                     <i className="fas fa-phone-slash text-white text-xl"></i>
                                   </button>
-                                  <button className="w-16 h-16 bg-gray-300 hover:bg-gray-400 rounded-full flex items-center justify-center shadow-lg transition-colors">
-                                    <i className="fas fa-microphone-slash text-white text-xl"></i>
+                                  <button 
+                                    onClick={handleCallMute}
+                                    className={`w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-colors ${
+                                      isCallMuted 
+                                        ? 'bg-red-500 hover:bg-red-600' 
+                                        : 'bg-gray-300 hover:bg-gray-400'
+                                    }`}
+                                  >
+                                    <i className={`fas ${isCallMuted ? 'fa-microphone-slash' : 'fa-microphone'} text-white text-xl`}></i>
                                   </button>
                                   <button className="w-16 h-16 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center shadow-lg transition-colors">
                                     <i className="fas fa-volume-up text-white text-xl"></i>
@@ -811,13 +967,15 @@ const Prototype1 = () => {
                                 {/* Call Info */}
                                 <div className="mt-8 text-sm text-gray-500">
                                   <p>VIP Priority Line</p>
-                                  <p>Agent: Sarah Johnson</p>
+                                  <p>Agent: Brian Johnson</p>
                                   <p>Department: Customer Success</p>
                                 </div>
                               </div>
                             </div>
                           </div>
                         )}
+                        </>
+                      )}
                       </>
                     )}
                   </div>
@@ -829,10 +987,20 @@ const Prototype1 = () => {
                 <p className="text-gray-400 text-sm">iPhone 16 Pro - Demo Size</p>
                 <p className="text-gray-500 text-xs mt-1">Larger mockup for better visibility</p>
                 <p className="text-blue-400 text-xs mt-2 font-medium">Click anywhere on screen to advance</p>
-                <p className="text-gray-500 text-xs mt-1">Step {currentStep + 1} of 5</p>
+                <p className="text-gray-500 text-xs mt-1">Step {currentStep + 1} of 6</p>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Logo - Bottom Right */}
+      <div className="fixed bottom-8 right-8 z-50">
+        <div className="w-24 h-24 rounded-2xl shadow-2xl flex items-center justify-center animate-pulse opacity-30">
+          <svg width="72" height="72" viewBox="0 0 112 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M35.9995 111.001C55.8811 111.001 71.999 94.8835 71.999 75.0015L71.999 39.001L35.9995 39.001C16.1179 39.001 -4.01725e-06 55.1184 -5.75548e-06 75.0015C-7.49362e-06 94.8835 16.1179 111.001 35.9995 111.001M35.9995 57.0015L53.999 57.0015L53.999 75.0015C53.999 84.9418 45.9408 93.001 35.9995 93.001C26.0582 93.001 17.999 84.9418 17.999 75.0015C17.999 65.0598 26.0582 57.0015 35.9995 57.0015" fill="#0076DE"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M83.999 0C68.5354 0 55.999 12.536 55.999 28V56.0008H83.999C99.4627 56.0008 111.999 43.4648 111.999 28C111.999 12.536 99.4627 0 83.999 0M83.999 42.0001H69.9992V28C69.9992 20.2685 76.2668 14.0001 83.999 14.0001C91.7312 14.0001 97.9995 20.2685 97.9995 28C97.9995 35.7325 91.7312 42.0001 83.999 42.0001" fill="#FEC84B"/>
+          </svg>
         </div>
       </div>
     </div>
