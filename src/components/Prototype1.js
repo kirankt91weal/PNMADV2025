@@ -9,7 +9,11 @@ const Prototype1 = () => {
   const [processingPayment, setProcessingPayment] = useState(false);
   const [showCallScreen, setShowCallScreen] = useState(false);
   const [isLoadingChat, setIsLoadingChat] = useState(false);
+  const [isCallMuted, setIsCallMuted] = useState(false);
+  const [callDuration, setCallDuration] = useState(0);
   const chatMessagesRef = useRef(null);
+  const callAudioRef = useRef(null);
+  const callTimerRef = useRef(null);
 
   // Auto-scroll to bottom whenever chat step changes or payment becomes successful
   useEffect(() => {
@@ -17,6 +21,57 @@ const Prototype1 = () => {
       chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
     }
   }, [chatStep, paymentSuccessful]);
+
+  // Handle call screen timer and audio
+  useEffect(() => {
+    if (showCallScreen) {
+      // Start call timer immediately
+      callTimerRef.current = setInterval(() => {
+        setCallDuration(prev => prev + 1);
+      }, 1000);
+    } else {
+      // Stop call audio and timer
+      if (callAudioRef.current) {
+        callAudioRef.current.pause();
+        callAudioRef.current.currentTime = 0;
+      }
+      if (callTimerRef.current) {
+        clearInterval(callTimerRef.current);
+        callTimerRef.current = null;
+      }
+      setCallDuration(0);
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (callTimerRef.current) {
+        clearInterval(callTimerRef.current);
+      }
+    };
+  }, [showCallScreen]);
+
+  // Handle audio playback - start after connection (3 seconds)
+  useEffect(() => {
+    if (showCallScreen && callDuration >= 3 && callAudioRef.current) {
+      // Start call audio when connection is established
+      callAudioRef.current.play().catch(console.error);
+      
+      // Add event listener for when audio ends
+      const handleAudioEnd = () => {
+        // Reset demo to beginning when call audio finishes
+        resetConversation();
+      };
+      
+      callAudioRef.current.addEventListener('ended', handleAudioEnd);
+      
+      // Cleanup event listener
+      return () => {
+        if (callAudioRef.current) {
+          callAudioRef.current.removeEventListener('ended', handleAudioEnd);
+        }
+      };
+    }
+  }, [showCallScreen, callDuration]);
 
   const handleScreenClick = () => {
     if (currentStep < 4) {
@@ -86,6 +141,36 @@ const Prototype1 = () => {
     setProcessingPayment(false);
     setShowCallScreen(false);
     setIsLoadingChat(false);
+    setIsCallMuted(false);
+    setCallDuration(0);
+    
+    // Stop any active call audio
+    if (callAudioRef.current) {
+      callAudioRef.current.pause();
+      callAudioRef.current.currentTime = 0;
+    }
+    if (callTimerRef.current) {
+      clearInterval(callTimerRef.current);
+      callTimerRef.current = null;
+    }
+  };
+
+  const handleCallMute = () => {
+    setIsCallMuted(!isCallMuted);
+    if (callAudioRef.current) {
+      callAudioRef.current.muted = !isCallMuted;
+    }
+  };
+
+  const handleCallHangup = () => {
+    setShowCallScreen(false);
+    // Audio cleanup is handled by useEffect
+  };
+
+  const formatCallDuration = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   const handlePaymentSuccess = () => {
@@ -803,6 +888,14 @@ const Prototype1 = () => {
                         {/* Call Screen */}
                         {showCallScreen && (
                           <div className="animate-fadeIn h-full absolute inset-0 z-50">
+                            {/* Hidden audio element for call simulation */}
+                            <audio 
+                              ref={callAudioRef}
+                              src="/IVA Demo.mp4"
+                              preload="auto"
+                              style={{ display: 'none' }}
+                            />
+                            
                             <div className="bg-white h-full flex flex-col">
                               {/* Call Header */}
                               <div className="bg-[#4566D7] px-5 py-4 flex items-center justify-between">
@@ -812,9 +905,12 @@ const Prototype1 = () => {
                                   </div>
                                   <div className="text-white text-sm font-medium">Active Call</div>
                                 </div>
-                                <div className="w-6 h-6 flex items-center justify-center">
+                                <button 
+                                  onClick={handleCallHangup}
+                                  className="w-6 h-6 flex items-center justify-center hover:bg-white/10 rounded transition-colors"
+                                >
                                   <i className="fas fa-times text-white text-sm"></i>
-                                </div>
+                                </button>
                               </div>
 
                               {/* Call Content */}
@@ -825,22 +921,43 @@ const Prototype1 = () => {
                                 </div>
                                 
                                 {/* Call Status */}
-                                <h2 className="text-2xl font-bold text-gray-800 mb-2">Connecting to Agent</h2>
-                                <p className="text-gray-600 mb-6">Please wait while we connect you to a VIP agent</p>
+                                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                                  {callDuration < 3 ? 'Connecting to Agent' : 'Connected'}
+                                </h2>
+                                <p className="text-gray-600 mb-6">
+                                  {callDuration < 3 
+                                    ? 'Please wait while we connect you to a VIP agent' 
+                                    : 'You are now speaking with Brian Johnson'
+                                  }
+                                </p>
                                 
                                 {/* Call Timer */}
                                 <div className="bg-gray-100 rounded-full px-6 py-3 mb-6">
-                                  <div className="text-2xl font-mono text-gray-800">00:03</div>
-                                  <div className="text-sm text-gray-600">Estimated wait time</div>
+                                  <div className="text-2xl font-mono text-gray-800">
+                                    {callDuration < 3 ? `00:0${3 - callDuration}` : formatCallDuration(callDuration - 3)}
+                                  </div>
+                                  <div className="text-sm text-gray-600">
+                                    {callDuration < 3 ? 'Estimated wait time' : 'Call duration'}
+                                  </div>
                                 </div>
                                 
                                 {/* Call Controls */}
                                 <div className="flex space-x-4">
-                                  <button className="w-16 h-16 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center shadow-lg transition-colors">
+                                  <button 
+                                    onClick={handleCallHangup}
+                                    className="w-16 h-16 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center shadow-lg transition-colors"
+                                  >
                                     <i className="fas fa-phone-slash text-white text-xl"></i>
                                   </button>
-                                  <button className="w-16 h-16 bg-gray-300 hover:bg-gray-400 rounded-full flex items-center justify-center shadow-lg transition-colors">
-                                    <i className="fas fa-microphone-slash text-white text-xl"></i>
+                                  <button 
+                                    onClick={handleCallMute}
+                                    className={`w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-colors ${
+                                      isCallMuted 
+                                        ? 'bg-red-500 hover:bg-red-600' 
+                                        : 'bg-gray-300 hover:bg-gray-400'
+                                    }`}
+                                  >
+                                    <i className={`fas ${isCallMuted ? 'fa-microphone-slash' : 'fa-microphone'} text-white text-xl`}></i>
                                   </button>
                                   <button className="w-16 h-16 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center shadow-lg transition-colors">
                                     <i className="fas fa-volume-up text-white text-xl"></i>
@@ -850,7 +967,7 @@ const Prototype1 = () => {
                                 {/* Call Info */}
                                 <div className="mt-8 text-sm text-gray-500">
                                   <p>VIP Priority Line</p>
-                                  <p>Agent: Sarah Johnson</p>
+                                  <p>Agent: Brian Johnson</p>
                                   <p>Department: Customer Success</p>
                                 </div>
                               </div>
