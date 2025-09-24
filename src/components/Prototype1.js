@@ -426,25 +426,34 @@ const Prototype1 = () => {
                             <div className="mb-6">
                               <h3 className="text-[#101828] text-sm font-bold uppercase mb-3">Suggested Payment Methods</h3>
                               <div className="space-y-0">
+                                {/* Bank Transfer */}
                                 <div className="flex items-center py-3 border-b border-[#E4E7EC]">
-                                  <div className="w-8 h-6 bg-[#D0D5DD] rounded mr-3"></div>
+                                  <div className="w-8 h-6 bg-white border border-[#BCC2C9] rounded mr-3 flex items-center justify-center">
+                                    <i className="fas fa-university text-[#0076DE] text-xs"></i>
+                                  </div>
                                   <div className="flex-1">
-                                    <div className="w-20 h-2 bg-[#D0D5DD] rounded-full mb-1"></div>
-                                    <div className="w-32 h-2 bg-[#D0D5DD] rounded-full"></div>
+                                    <div className="text-[#0A2540] text-sm font-bold">Bank Transfer</div>
+                                    <div className="text-[#5B6A7B] text-xs">Service Fee - $0.99</div>
                                   </div>
                                 </div>
+                                {/* PayPal */}
                                 <div className="flex items-center py-3 border-b border-[#E4E7EC]">
-                                  <div className="w-8 h-6 bg-[#D0D5DD] rounded mr-3"></div>
+                                  <div className="w-8 h-6 bg-[#3B7BBF] rounded mr-3 flex items-center justify-center">
+                                    <i className="fa-brands fa-paypal text-white text-xs"></i>
+                                  </div>
                                   <div className="flex-1">
-                                    <div className="w-20 h-2 bg-[#D0D5DD] rounded-full mb-1"></div>
-                                    <div className="w-32 h-2 bg-[#D0D5DD] rounded-full"></div>
+                                    <div className="text-[#0A2540] text-sm font-bold">PayPal</div>
+                                    <div className="text-[#5B6A7B] text-xs">Service Fee - $1.99</div>
                                   </div>
                                 </div>
+                                {/* Apple Pay */}
                                 <div className="flex items-center py-3">
-                                  <div className="w-8 h-6 bg-[#D0D5DD] rounded mr-3"></div>
+                                  <div className="w-8 h-6 bg-black rounded mr-3 flex items-center justify-center">
+                                    <i className="fa-brands fa-apple-pay text-white text-xs"></i>
+                                  </div>
                                   <div className="flex-1">
-                                    <div className="w-20 h-2 bg-[#D0D5DD] rounded-full mb-1"></div>
-                                    <div className="w-32 h-2 bg-[#D0D5DD] rounded-full"></div>
+                                    <div className="text-[#0A2540] text-sm font-bold">Apple Pay</div>
+                                    <div className="text-[#5B6A7B] text-xs">Service Fee - $1.99</div>
                                   </div>
                                 </div>
                               </div>
