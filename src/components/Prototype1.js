@@ -435,6 +435,7 @@ const Prototype1 = () => {
                                     <div className="text-[#0A2540] text-sm font-bold">Bank Transfer</div>
                                     <div className="text-[#5B6A7B] text-xs">Service Fee - $0.99</div>
                                   </div>
+                                  <i className="fas fa-chevron-right text-[#929CA7] text-base"></i>
                                 </div>
                                 {/* PayPal */}
                                 <div className="flex items-center py-3 border-b border-[#E4E7EC]">
@@ -445,6 +446,7 @@ const Prototype1 = () => {
                                     <div className="text-[#0A2540] text-sm font-bold">PayPal</div>
                                     <div className="text-[#5B6A7B] text-xs">Service Fee - $1.99</div>
                                   </div>
+                                  <i className="fas fa-chevron-right text-[#929CA7] text-base"></i>
                                 </div>
                                 {/* Apple Pay */}
                                 <div className="flex items-center py-3">
@@ -455,6 +457,7 @@ const Prototype1 = () => {
                                     <div className="text-[#0A2540] text-sm font-bold">Apple Pay</div>
                                     <div className="text-[#5B6A7B] text-xs">Service Fee - $1.99</div>
                                   </div>
+                                  <i className="fas fa-chevron-right text-[#929CA7] text-base"></i>
                                 </div>
                               </div>
                             </div>
