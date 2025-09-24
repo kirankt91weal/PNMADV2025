@@ -423,7 +423,7 @@ const Prototype1 = () => {
                             </div>
 
                             {/* Suggested Payment Methods */}
-                            <div className="mb-6">
+                            <div className="mb-3">
                               <h3 className="text-[#101828] text-sm font-bold uppercase mb-3">Suggested Payment Methods</h3>
                               <div className="space-y-0">
                                 {/* Bank Transfer */}
