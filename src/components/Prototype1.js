@@ -712,6 +712,55 @@ const Prototype1 = () => {
                                           </div>
                                         </div>
 
+                                        {/* Payment History Widget */}
+                                        <div className="flex justify-start animate-fadeIn mt-3">
+                                          <div className="bg-white border border-[#DEE0E3] rounded-xl p-0 max-w-[80%] w-full" style={{height: '164px'}}>
+                                            {/* Top Section */}
+                                            <div className="flex flex-col p-3 pb-2">
+                                              {/* Meta */}
+                                              <div className="flex items-center gap-1 mb-1">
+                                                <span className="text-[#2E90FA] text-[10px] font-semibold flex-1">PAYMENT HISTORY</span>
+                                                <i className="fas fa-chart-bar text-[#0076DE] text-xs"></i>
+                                                <i className="fas fa-info-circle text-[#9AA4AE] text-xs"></i>
+                                              </div>
+                                              {/* Title */}
+                                              <div className="py-1">
+                                                <div className="text-[#0A2540] text-base font-semibold">Last 12 Payments</div>
+                                                <div className="text-[#9AA4AE] text-[10px] font-normal">9 On Time, 3 Late</div>
+                                              </div>
+                                            </div>
+
+                                            {/* Content Section */}
+                                            <div className="px-3 py-1">
+                                              {/* Legend */}
+                                              <div className="flex gap-3 mb-2">
+                                                <div className="flex items-center gap-1">
+                                                  <div className="w-1.5 h-1.5 bg-[#32D583] rounded-full"></div>
+                                                  <span className="text-[#3C4C62] text-[10px]">Successful</span>
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                  <div className="w-1.5 h-1.5 bg-[#F97066] rounded-full"></div>
+                                                  <span className="text-[#3C4C62] text-[10px]">Failed</span>
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                  <div className="w-1.5 h-1.5 bg-[#F59E0B] rounded-full"></div>
+                                                  <span className="text-[#3C4C62] text-[10px]">Late</span>
+                                                </div>
+                                              </div>
+
+                                              {/* Payment Chart */}
+                                              <div className="flex gap-0.5">
+                                                {[1,2,3,4,5,6,7,8,9,10,11,12].map((index) => (
+                                                  <div 
+                                                    key={index}
+                                                    className={`flex-1 h-2.5 ${[3,7,10].includes(index) ? 'bg-[#F59E0B]' : 'bg-[#32D583]'}`}
+                                                  ></div>
+                                                ))}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+
                                         {/* Quick Reply Buttons */}
                                         {chatStep < 3 && (
                                           <div className="px-4 py-2">
