@@ -382,7 +382,7 @@ const Prototype1 = () => {
                             {/* Main Message */}
                             <div className="text-center mb-6">
                               <h2 className="text-[#101828] text-xl font-bold mb-3">Payment Unsuccessful</h2>
-                              <p className="text-[#101828] text-sm font-medium leading-5">
+                              <p className="text-[#6B7280] text-xs font-medium leading-5">
                                 We encountered an issue with your $450.00 payment to Freehold Financial. Please choose a different payment method below, or chat with us to resolve the issue.
                               </p>
                             </div>
