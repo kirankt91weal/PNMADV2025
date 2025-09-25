@@ -382,7 +382,7 @@ const Prototype1 = () => {
                             {/* Main Message */}
                             <div className="text-center mb-6">
                               <h2 className="text-[#101828] text-xl font-bold mb-3">Payment Unsuccessful</h2>
-                              <p className="text-[#101828] text-sm font-medium leading-5">
+                              <p className="text-[#6B7280] text-xs font-medium leading-5">
                                 We encountered an issue with your $450.00 payment to Freehold Financial. Please choose a different payment method below, or chat with us to resolve the issue.
                               </p>
                             </div>
@@ -423,29 +423,41 @@ const Prototype1 = () => {
                             </div>
 
                             {/* Suggested Payment Methods */}
-                            <div className="mb-6">
+                            <div className="mb-3">
                               <h3 className="text-[#101828] text-sm font-bold uppercase mb-3">Suggested Payment Methods</h3>
                               <div className="space-y-0">
+                                {/* Bank Transfer */}
                                 <div className="flex items-center py-3 border-b border-[#E4E7EC]">
-                                  <div className="w-8 h-6 bg-[#D0D5DD] rounded mr-3"></div>
-                                  <div className="flex-1">
-                                    <div className="w-20 h-2 bg-[#D0D5DD] rounded-full mb-1"></div>
-                                    <div className="w-32 h-2 bg-[#D0D5DD] rounded-full"></div>
+                                  <div className="w-8 h-6 bg-white border border-[#BCC2C9] rounded mr-3 flex items-center justify-center">
+                                    <i className="fas fa-university text-[#0076DE] text-xs"></i>
                                   </div>
+                                  <div className="flex-1">
+                                    <div className="text-[#0A2540] text-sm font-bold">Bank Transfer</div>
+                                    <div className="text-[#5B6A7B] text-xs">Service Fee - $0.99</div>
+                                  </div>
+                                  <i className="fas fa-chevron-right text-[#929CA7] text-base"></i>
                                 </div>
+                                {/* PayPal */}
                                 <div className="flex items-center py-3 border-b border-[#E4E7EC]">
-                                  <div className="w-8 h-6 bg-[#D0D5DD] rounded mr-3"></div>
-                                  <div className="flex-1">
-                                    <div className="w-20 h-2 bg-[#D0D5DD] rounded-full mb-1"></div>
-                                    <div className="w-32 h-2 bg-[#D0D5DD] rounded-full"></div>
+                                  <div className="w-8 h-6 bg-[#3B7BBF] rounded mr-3 flex items-center justify-center">
+                                    <i className="fa-brands fa-paypal text-white text-xs"></i>
                                   </div>
+                                  <div className="flex-1">
+                                    <div className="text-[#0A2540] text-sm font-bold">PayPal</div>
+                                    <div className="text-[#5B6A7B] text-xs">Service Fee - $1.99</div>
+                                  </div>
+                                  <i className="fas fa-chevron-right text-[#929CA7] text-base"></i>
                                 </div>
+                                {/* Apple Pay */}
                                 <div className="flex items-center py-3">
-                                  <div className="w-8 h-6 bg-[#D0D5DD] rounded mr-3"></div>
-                                  <div className="flex-1">
-                                    <div className="w-20 h-2 bg-[#D0D5DD] rounded-full mb-1"></div>
-                                    <div className="w-32 h-2 bg-[#D0D5DD] rounded-full"></div>
+                                  <div className="w-8 h-6 bg-black rounded mr-3 flex items-center justify-center">
+                                    <i className="fa-brands fa-apple-pay text-white text-xs"></i>
                                   </div>
+                                  <div className="flex-1">
+                                    <div className="text-[#0A2540] text-sm font-bold">Apple Pay</div>
+                                    <div className="text-[#5B6A7B] text-xs">Service Fee - $1.99</div>
+                                  </div>
+                                  <i className="fas fa-chevron-right text-[#929CA7] text-base"></i>
                                 </div>
                               </div>
                             </div>
@@ -697,6 +709,55 @@ const Prototype1 = () => {
                                         <div className="flex justify-start animate-fadeIn">
                                           <div className="bg-gray-200 rounded-lg px-4 py-3 max-w-[80%]">
                                             <p className="text-gray-800 text-sm">We noticed that you have paid 3 days past due in 3 instances, would you like to speak to an agent about requesting a due date change?</p>
+                                          </div>
+                                        </div>
+
+                                        {/* Payment History Widget */}
+                                        <div className="flex justify-start animate-fadeIn mt-3">
+                                          <div className="bg-white border border-[#DEE0E3] rounded-xl p-0 max-w-[80%] w-full" style={{height: '164px'}}>
+                                            {/* Top Section */}
+                                            <div className="flex flex-col p-3 pb-2">
+                                              {/* Meta */}
+                                              <div className="flex items-center gap-1 mb-1">
+                                                <span className="text-[#2E90FA] text-[10px] font-semibold flex-1">PAYMENT HISTORY</span>
+                                                <i className="fas fa-chart-bar text-[#0076DE] text-xs"></i>
+                                                <i className="fas fa-info-circle text-[#9AA4AE] text-xs"></i>
+                                              </div>
+                                              {/* Title */}
+                                              <div className="py-1">
+                                                <div className="text-[#0A2540] text-base font-semibold">Last 12 Payments</div>
+                                                <div className="text-[#9AA4AE] text-[10px] font-normal">9 On Time, 3 Late</div>
+                                              </div>
+                                            </div>
+
+                                            {/* Content Section */}
+                                            <div className="px-3 py-1">
+                                              {/* Legend */}
+                                              <div className="flex gap-3 mb-2">
+                                                <div className="flex items-center gap-1">
+                                                  <div className="w-1.5 h-1.5 bg-[#32D583] rounded-full"></div>
+                                                  <span className="text-[#3C4C62] text-[10px]">Successful</span>
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                  <div className="w-1.5 h-1.5 bg-[#F97066] rounded-full"></div>
+                                                  <span className="text-[#3C4C62] text-[10px]">Failed</span>
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                  <div className="w-1.5 h-1.5 bg-[#F59E0B] rounded-full"></div>
+                                                  <span className="text-[#3C4C62] text-[10px]">Late</span>
+                                                </div>
+                                              </div>
+
+                                              {/* Payment Chart */}
+                                              <div className="flex gap-0.5">
+                                                {[1,2,3,4,5,6,7,8,9,10,11,12].map((index) => (
+                                                  <div 
+                                                    key={index}
+                                                    className={`flex-1 h-2.5 ${[3,7,10].includes(index) ? 'bg-[#F59E0B]' : 'bg-[#32D583]'}`}
+                                                  ></div>
+                                                ))}
+                                              </div>
+                                            </div>
                                           </div>
                                         </div>
 
